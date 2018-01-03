@@ -1,0 +1,27 @@
+{
+  "name": "google_maps_ui",
+  "version": "0.1",
+  "description": {
+    "en": "Google Maps UI",
+    "ru": "Google Maps UI",
+    "uk": "Google Maps UI"
+  },
+  "url": "https://github.com/pytsite/plugin-google_maps_ui",
+  "author": {
+    "name": "Alexander Shepetko",
+    "email": "a@shepetko.com",
+    "url": "https://shepetko.com"
+  },
+  "requires": {
+    "packages": [],
+    "plugins": [
+      "auth",
+      "assetman",
+      "font_awesome",
+      "geo",
+      "google_maps",
+      "settings",
+      "widget"
+    ]
+  }
+}
