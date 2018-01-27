@@ -279,10 +279,10 @@ define(['jquery', 'assetman', 'lang'], function ($, assetman, lang) {
 
     window.pytsiteGoogleMapsReady = false;
     window.pytsiteGoogleMapsInit = function () {
-        assetman.loadCSS('plugins.google_maps@css/google-maps.css');
-        assetman.loadJS('plugins.google_maps@js/google-maps-InfoBox.min.js');
-        assetman.loadJS('plugins.google_maps@js/google-maps-MarkerWithLabel.min.js');
-        assetman.loadJS('plugins.google_maps@js/google-maps-RichMarker.min.js');
+        assetman.loadCSS('plugins.google_maps_ui@css/google-maps.css');
+        assetman.loadJS('plugins.google_maps_ui@js/google-maps-InfoBox.min.js');
+        assetman.loadJS('plugins.google_maps_ui@js/google-maps-MarkerWithLabel.min.js');
+        assetman.loadJS('plugins.google_maps_ui@js/google-maps-RichMarker.min.js');
 
         $(window).trigger('pytsiteGoogleMaps.ready');
         window.pytsiteGoogleMapsReady = true;

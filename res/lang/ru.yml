@@ -1,5 +1,4 @@
 google_maps: 'Google Maps'
 api_key: 'Ключ API'
 api_key_setup_help: 'Получите свой <a target="_blank" href="https://developers.google.com/maps/documentation/javascript/get-api-key">ключ API</a> и скопируйте его в это поле'
-manage_google_maps_settings: 'Управление настройками Google Maps'
 plugin_setup_required_warning: 'Необходимо <a href="{:google_maps_admin_settings_url}">настроить плагин Google Maps</a>'

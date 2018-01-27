@@ -15,8 +15,8 @@ class Form(_settings.Form):
         self.add_widget(_widget.input.Text(
             uid='setting_api_key',
             weight=10,
-            label=_lang.t('google_maps@api_key'),
-            help=_lang.t('google_maps@api_key_setup_help'),
+            label=_lang.t('google_maps_ui@api_key'),
+            help=_lang.t('google_maps_ui@api_key_setup_help'),
             default=_reg.get('google_maps.api_key'),
         ))
 

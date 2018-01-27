@@ -127,7 +127,7 @@ class StaticMap(_pytsite_widget.Abstract):
     def __init__(self, uid: str, **kwargs):
         super().__init__(uid, **kwargs)
 
-        self._point = _google_maps.types.Location(kwargs.get('lat', 50.4501), kwargs.get('lng', 30.5234))
+        self._point = _geo.types.Location(kwargs.get('lat', 50.4501), kwargs.get('lng', 30.5234))
         self._zoom = kwargs.get('zoom', 15)
         self._scale = kwargs.get('scale', 1)
         self._markers = kwargs.get('markers', [])
