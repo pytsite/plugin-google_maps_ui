@@ -64,7 +64,7 @@ class AddressInput(_pytsite_widget.Abstract):
     def autodetect(self, value: bool):
         self._autodetect = value
 
-    def set_val(self, val: _Union[dict, _frozendict], **kwargs):
+    def set_val(self, val: _Union[dict, _frozendict]):
         """Set value of the widget.
         """
         if isinstance(val, (dict, _frozendict)) and val:
@@ -90,7 +90,7 @@ class AddressInput(_pytsite_widget.Abstract):
         else:
             raise ValueError('Dict or None expected.')
 
-        return super().set_val(val, **kwargs)
+        return super().set_val(val)
 
     def get_val(self, **kwargs):
         """Set value of the widget.
