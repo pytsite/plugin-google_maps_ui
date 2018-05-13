@@ -31,12 +31,12 @@ class AddressInput(_pytsite_widget.Abstract):
 
         self._autodetect = kwargs.get('autodetect', False)
         self._css += ' widget-google-address-input'
-        self._js_module = 'google-maps-widget-address-input'
+        self._js_modules.append('google-maps-widget-address-input')
 
         # Validation rule for 'required' widget
         if self._required:
             self.clr_rules().add_rules([r for r in self.get_rules() if not isinstance(r, _validation.rule.NonEmpty)])
-            self.add_rule(_geo.validation_rule.AddressNonEmpty())
+            self.add_rule(_geo.validation.AddressNonEmpty())
 
     @property
     def required(self) -> bool:
@@ -45,7 +45,7 @@ class AddressInput(_pytsite_widget.Abstract):
     @required.setter
     def required(self, value: bool):
         if value:
-            self.add_rule(_geo.validation_rule.AddressNonEmpty())
+            self.add_rule(_geo.validation.AddressNonEmpty())
         else:
             # Clear all added NonEmpty and AddressNonEmpty rules
             rules = [r for r in self.get_rules() if not isinstance(r, (
@@ -134,7 +134,7 @@ class StaticMap(_pytsite_widget.Abstract):
         self._linked = kwargs.get('linked', True)
         self._link_target = kwargs.get('link_target', '_blank')
         self._img_css = kwargs.get('img_css', 'img-responsive')
-        self._js_module = 'google-maps-widget-static-map'
+        self._js_modules.append('google-maps-widget-static-map')
 
     def _get_element(self, **kwargs):
         self._data['img_class'] = self._img_css
