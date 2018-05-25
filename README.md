@@ -4,6 +4,13 @@
 ## Changelog
 
 
+### 0.5 (2018-05-25)
+
+- Support for `component_restrictions` and `types` arguments in
+  `widget.AddressInput`.
+- New widget: `widget.CityInput`.
+
+
 ### 0.4 (2018-05-13)
 
 Support of `widget-2.0`.

@@ -17,7 +17,7 @@ class AddressInput(_pytsite_widget.Abstract):
     """
 
     def __init__(self, uid: str, **kwargs):
-        """Init.
+        """Init
         """
         if 'default' not in kwargs:
             kwargs['default'] = {
@@ -30,6 +30,8 @@ class AddressInput(_pytsite_widget.Abstract):
         super().__init__(uid, **kwargs)
 
         self._autodetect = kwargs.get('autodetect', False)
+        self._types = kwargs.get('types', ['establishment'])
+        self._component_restrictions = kwargs.get('component_restrictions', [])
         self._css += ' widget-google-address-input'
         self._js_modules.append('google-maps-widget-address-input')
 
@@ -50,11 +52,20 @@ class AddressInput(_pytsite_widget.Abstract):
             # Clear all added NonEmpty and AddressNonEmpty rules
             rules = [r for r in self.get_rules() if not isinstance(r, (
                 _validation.rule.NonEmpty,
-                _geo.validation_rule.AddressNonEmpty
+                _geo.validation.AddressNonEmpty
             ))]
             self.clr_rules().add_rules(rules)
 
         self._required = value
+
+    @property
+    def types(self) -> bool:
+        return self._types
+
+    @types.setter
+    def types(self, value: bool):
+        # https://developers.google.com/places/supported_types#table3
+        self._types = value
 
     @property
     def autodetect(self) -> bool:
@@ -63,6 +74,15 @@ class AddressInput(_pytsite_widget.Abstract):
     @autodetect.setter
     def autodetect(self, value: bool):
         self._autodetect = value
+
+    @property
+    def component_restrictions(self) -> bool:
+        return self._component_restrictions
+
+    @component_restrictions.setter
+    def component_restrictions(self, value: bool):
+        # https://developers.google.com/maps/documentation/javascript/reference/3/places-widget#ComponentRestrictions
+        self._component_restrictions = value
 
     def set_val(self, val: _Union[dict, _frozendict]):
         """Set value of the widget.
@@ -113,9 +133,22 @@ class AddressInput(_pytsite_widget.Abstract):
         inputs.append(_html.Input(type='hidden', name=self._uid + '[address]', value=address))
         inputs.append(_html.Input(type='hidden', name=self._uid + '[address_components]', value=address_components))
 
-        self._data['autodetect'] = self._autodetect
+        if self._autodetect:
+            self._data['autodetect'] = self._autodetect
+
+        if self._types:
+            self._data['types'] = _json_dumps(self._types)
+
+        if self._component_restrictions:
+            self._data['component_restrictions'] = _json_dumps({'country': self._component_restrictions})
 
         return inputs
+
+
+class CityInput(AddressInput):
+    def __init__(self, uid: str, **kwargs):
+        cr = kwargs.get('countries', [])
+        super().__init__(uid, component_restrictions=cr, types=['(cities)'], **kwargs)
 
 
 class StaticMap(_pytsite_widget.Abstract):

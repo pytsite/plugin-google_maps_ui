@@ -1,4 +1,4 @@
-define(['jquery'], function ($) {
+define(['jquery', 'google-maps'], function ($) {
     return function (widget) {
         function setBounds(autcomplete) {
             if ('geolocation' in navigator) {
@@ -19,7 +19,8 @@ define(['jquery'], function ($) {
             var latInput = widget.em.find('input[name="' + uid + '[lat]"]');
             var componentsInput = widget.em.find('input[name="' + uid + '[address_components]"]');
             var autocomplete = new google.maps.places.Autocomplete(searchInput[0], {
-                types: ['geocode']
+                types: widget.data('types'),
+                componentRestrictions: widget.data('componentRestrictions')
             });
 
             widget.em.keydown(function (event) {
@@ -40,13 +41,6 @@ define(['jquery'], function ($) {
                     lngInput.val('0.0');
                     componentsInput.val('[]');
                 }
-
-                setTimeout(function () {
-                    if (addressInput.val())
-                        searchInput.val(addressInput.val());
-                    else
-                        searchInput.val('');
-                }, 50);
             });
 
             // Update our hidden fields with data provided by Google
@@ -54,7 +48,7 @@ define(['jquery'], function ($) {
                 var place = autocomplete.getPlace();
                 if (place.hasOwnProperty('geometry')) {
                     var loc = place.geometry.location;
-                    addressInput.val(searchInput.val());
+                    addressInput.val(place.formatted_address);
                     latInput.val(loc.lat());
                     lngInput.val(loc.lng());
                     componentsInput.val(JSON.stringify(place.address_components));
@@ -89,11 +83,6 @@ define(['jquery'], function ($) {
         }
 
         // Start work only after Google libraries are all ready
-        if (window.pytsiteGoogleMapsReady) {
-            init();
-        }
-        else {
-            $(window).on('pytsiteGoogleMaps.ready', init);
-        }
+        window.pytsiteGoogleMapsReady ? init() : $(window).on('pytsiteGoogleMaps.ready', init);
     }
 });
