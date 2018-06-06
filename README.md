@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 0.5.1 (2018-06-06)
+
+Paceholder issue fixed in `widget.AddressInput`.
+
+
 ### 0.5 (2018-05-25)
 
 - Support for `component_restrictions` and `types` arguments in

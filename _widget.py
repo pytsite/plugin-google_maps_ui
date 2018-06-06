@@ -127,7 +127,8 @@ class AddressInput(_pytsite_widget.Abstract):
         address_components = _json_dumps(self.value['address_components'])
 
         inputs = _html.TagLessElement()
-        inputs.append(_html.Input(type='text', name=self._uid + '[search]', css='form-control', value=address))
+        inputs.append(_html.Input(type='text', name=self._uid + '[search]', css='form-control', value=address,
+                                  placeholder=self._placeholder))
         inputs.append(_html.Input(type='hidden', name=self._uid + '[lng]', value=lng))
         inputs.append(_html.Input(type='hidden', name=self._uid + '[lat]', value=lat))
         inputs.append(_html.Input(type='hidden', name=self._uid + '[address]', value=address))
