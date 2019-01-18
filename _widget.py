@@ -1,6 +1,6 @@
 """PytSite Google Maps Plugin Widgets
 """
-__author__ = 'Alexander Shepetko'
+__author__ = 'Oleksandr Shepetko'
 __email__ = 'a@shepetko.com'
 __license__ = 'MIT'
 
@@ -33,7 +33,6 @@ class AddressInput(_pytsite_widget.Abstract):
         self._types = kwargs.get('types', ['establishment'])
         self._component_restrictions = kwargs.get('component_restrictions', [])
         self._css += ' widget-google-address-input'
-        self._js_modules.append('google-maps-widget-address-input')
 
         # Validation rule for 'required' widget
         if self._required:
@@ -161,14 +160,16 @@ class StaticMap(_pytsite_widget.Abstract):
     def __init__(self, uid: str, **kwargs):
         super().__init__(uid, **kwargs)
 
-        self._point = _geo.types.Location(kwargs.get('lat', 50.4501), kwargs.get('lng', 30.5234))
+        lat = kwargs.get('lat', 50.4501)
+        lng = kwargs.get('lng', 30.5234)
+
+        self._point = _geo.types.Location(lat, lng)
         self._zoom = kwargs.get('zoom', 15)
         self._scale = kwargs.get('scale', 1)
-        self._markers = kwargs.get('markers', [])
+        self._markers = kwargs.get('markers', ['{},{}'.format(lat, lng)])
         self._linked = kwargs.get('linked', True)
         self._link_target = kwargs.get('link_target', '_blank')
-        self._img_css = kwargs.get('img_css', 'img-responsive')
-        self._js_modules.append('google-maps-widget-static-map')
+        self._img_css = kwargs.get('img_css', 'img-responsive img-fluid')
 
     def _get_element(self, **kwargs):
         self._data['img_class'] = self._img_css

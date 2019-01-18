@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 0.6 (2018-01-18)
+
+Cleaned up, fixed, refactored.
+
+
 ### 0.5.1 (2018-06-06)
 
 Paceholder issue fixed in `widget.AddressInput`.
