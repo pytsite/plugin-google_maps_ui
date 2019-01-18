@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 0.7 (2018-01-18)
+
+Support of `width` and `height` parameters in `widget.StaticMap`.
+
+
 ### 0.6 (2018-01-18)
 
 Cleaned up, fixed, refactored.

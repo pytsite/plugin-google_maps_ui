@@ -160,6 +160,8 @@ class StaticMap(_pytsite_widget.Abstract):
     def __init__(self, uid: str, **kwargs):
         super().__init__(uid, **kwargs)
 
+        self._has_messages = False
+
         lat = kwargs.get('lat', 50.4501)
         lng = kwargs.get('lng', 30.5234)
 
@@ -167,12 +169,16 @@ class StaticMap(_pytsite_widget.Abstract):
         self._zoom = kwargs.get('zoom', 15)
         self._scale = kwargs.get('scale', 1)
         self._markers = kwargs.get('markers', ['{},{}'.format(lat, lng)])
+        self._width = kwargs.get('width', 0)
+        self._height = kwargs.get('height', 0)
         self._linked = kwargs.get('linked', True)
         self._link_target = kwargs.get('link_target', '_blank')
         self._img_css = kwargs.get('img_css', 'img-responsive img-fluid')
 
     def _get_element(self, **kwargs):
         self._data['img_class'] = self._img_css
+        self._data['width'] = self._width
+        self._data['height'] = self._height
 
         self._data['img_url'] = _router.url('https://maps.googleapis.com/maps/api/staticmap', query={
             'center': '{},{}'.format(self._point.lat, self._point.lng),
