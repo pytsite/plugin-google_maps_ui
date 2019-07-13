@@ -4,15 +4,16 @@ __author__ = 'Oleksandr Shepetko'
 __email__ = 'a@shepetko.com'
 __license__ = 'MIT'
 
-from typing import Union as _Union
-from copy import deepcopy as _deepcopy
-from json import dumps as _json_dumps, loads as _json_loads
-from frozendict import frozendict as _frozendict
-from pytsite import html as _html, router as _router, validation as _validation
-from plugins import widget as _pytsite_widget, geo as _geo, google_maps as _google_maps
+import json
+import htmler
+from typing import Union
+from copy import deepcopy
+from frozendict import frozendict
+from pytsite import router, validation
+from plugins import widget, geo, google_maps
 
 
-class AddressInput(_pytsite_widget.Abstract):
+class AddressInput(widget.Abstract):
     """Geo Address Input Widget.
     """
 
@@ -36,8 +37,8 @@ class AddressInput(_pytsite_widget.Abstract):
 
         # Validation rule for 'required' widget
         if self._required:
-            self.clr_rules().add_rules([r for r in self.get_rules() if not isinstance(r, _validation.rule.NonEmpty)])
-            self.add_rule(_geo.validation.AddressNonEmpty())
+            self.clr_rules().add_rules([r for r in self.get_rules() if not isinstance(r, validation.rule.NonEmpty)])
+            self.add_rule(geo.validation.AddressNonEmpty())
 
     @property
     def required(self) -> bool:
@@ -46,12 +47,12 @@ class AddressInput(_pytsite_widget.Abstract):
     @required.setter
     def required(self, value: bool):
         if value:
-            self.add_rule(_geo.validation.AddressNonEmpty())
+            self.add_rule(geo.validation.AddressNonEmpty())
         else:
             # Clear all added NonEmpty and AddressNonEmpty rules
             rules = [r for r in self.get_rules() if not isinstance(r, (
-                _validation.rule.NonEmpty,
-                _geo.validation.AddressNonEmpty
+                validation.rule.NonEmpty,
+                geo.validation.AddressNonEmpty
             ))]
             self.clr_rules().add_rules(rules)
 
@@ -83,10 +84,10 @@ class AddressInput(_pytsite_widget.Abstract):
         # https://developers.google.com/maps/documentation/javascript/reference/3/places-widget#ComponentRestrictions
         self._component_restrictions = value
 
-    def set_val(self, val: _Union[dict, _frozendict]):
+    def set_val(self, val: Union[dict, frozendict]):
         """Set value of the widget.
         """
-        if isinstance(val, (dict, _frozendict)) and val:
+        if isinstance(val, (dict, frozendict)) and val:
             # Checking for required keys
             for k in ['lng', 'lat', 'address', 'address_components']:
                 if k not in val:
@@ -94,7 +95,7 @@ class AddressInput(_pytsite_widget.Abstract):
 
             # Loading address components
             if isinstance(val['address_components'], str):
-                components = _json_loads(val['address_components'])
+                components = json.loads(val['address_components'])
             else:
                 components = val['address_components']
 
@@ -114,33 +115,34 @@ class AddressInput(_pytsite_widget.Abstract):
     def get_val(self, **kwargs):
         """Set value of the widget.
         """
-        return super().get_val(**kwargs) or _deepcopy(self._default)
+        return super().get_val(**kwargs) or deepcopy(self._default)
 
-    def _get_element(self, **kwargs) -> _html.Element:
+    def _get_element(self, **kwargs) -> htmler.Element:
         """Render the widget.
         :param **kwargs:
         """
         lng = self.value['lng']
         lat = self.value['lat']
         address = self.value['address']
-        address_components = _json_dumps(self.value['address_components'])
+        address_components = json.dumps(self.value['address_components'])
 
-        inputs = _html.TagLessElement()
-        inputs.append(_html.Input(type='text', name=self._uid + '[search]', css='form-control', value=address,
-                                  placeholder=self._placeholder))
-        inputs.append(_html.Input(type='hidden', name=self._uid + '[lng]', value=lng))
-        inputs.append(_html.Input(type='hidden', name=self._uid + '[lat]', value=lat))
-        inputs.append(_html.Input(type='hidden', name=self._uid + '[address]', value=address))
-        inputs.append(_html.Input(type='hidden', name=self._uid + '[address_components]', value=address_components))
+        inputs = htmler.TagLessElement()
+        inputs.append_child(htmler.Input(type='text', name=self._uid + '[search]', css='form-control', value=address,
+                                         placeholder=self._placeholder))
+        inputs.append_child(htmler.Input(type='hidden', name=self._uid + '[lng]', value=lng))
+        inputs.append_child(htmler.Input(type='hidden', name=self._uid + '[lat]', value=lat))
+        inputs.append_child(htmler.Input(type='hidden', name=self._uid + '[address]', value=address))
+        inputs.append_child(
+            htmler.Input(type='hidden', name=self._uid + '[address_components]', value=address_components))
 
         if self._autodetect:
             self._data['autodetect'] = self._autodetect
 
         if self._types:
-            self._data['types'] = _json_dumps(self._types)
+            self._data['types'] = json.dumps(self._types)
 
         if self._component_restrictions:
-            self._data['component_restrictions'] = _json_dumps({'country': self._component_restrictions})
+            self._data['component_restrictions'] = json.dumps({'country': self._component_restrictions})
 
         return inputs
 
@@ -151,7 +153,7 @@ class CityInput(AddressInput):
         super().__init__(uid, component_restrictions=cr, types=['(cities)'], **kwargs)
 
 
-class StaticMap(_pytsite_widget.Abstract):
+class StaticMap(widget.Abstract):
     """Google Static Map.
 
     https://developers.google.com/maps/documentation/static-maps/intro
@@ -165,7 +167,7 @@ class StaticMap(_pytsite_widget.Abstract):
         lat = kwargs.get('lat', 50.4501)
         lng = kwargs.get('lng', 30.5234)
 
-        self._point = _geo.types.Location(lat, lng)
+        self._point = geo.types.Location(lat, lng)
         self._zoom = kwargs.get('zoom', 15)
         self._scale = kwargs.get('scale', 1)
         self._markers = kwargs.get('markers', ['{},{}'.format(lat, lng)])
@@ -180,16 +182,16 @@ class StaticMap(_pytsite_widget.Abstract):
         self._data['width'] = self._width
         self._data['height'] = self._height
 
-        self._data['img_url'] = _router.url('https://maps.googleapis.com/maps/api/staticmap', query={
+        self._data['img_url'] = router.url('https://maps.googleapis.com/maps/api/staticmap', query={
             'center': '{},{}'.format(self._point.lat, self._point.lng),
             'zoom': self._zoom,
             'scale': self._scale,
             'markers': '|'.join(x for x in self._markers),
-            'key': _google_maps.helpers.get_google_api_key(),
+            'key': google_maps.helpers.get_google_api_key(),
         })
 
         if self._linked:
-            self._data['link'] = _google_maps.maps.link(self._point, zoom=self._zoom)
+            self._data['link'] = google_maps.maps.link(self._point, zoom=self._zoom)
             self._data['link_target'] = self._link_target
 
-        return _html.TagLessElement()
+        return htmler.TagLessElement()

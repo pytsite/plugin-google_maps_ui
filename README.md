@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 0.8 (2018-07-13)
+
+Support of `pytsite-9.0`.
+
+
 ### 0.7 (2018-01-18)
 
 Support of `width` and `height` parameters in `widget.StaticMap`.
